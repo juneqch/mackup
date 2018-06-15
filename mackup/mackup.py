@@ -96,3 +96,15 @@ class Mackup(object):
             apps_to_backup.discard(app_name)
 
         return apps_to_backup
+
+    def get_subgroup(self, app_name):
+        """
+        Get application subgroup.
+
+        Returns:
+            (str) Application subgroup
+        """
+        if not app_name is None and app_name in self._config.subgroup_apps_to_sync:
+            return self._config.subgroup
+
+        return None

@@ -14,7 +14,7 @@ class ApplicationProfile(object):
 
     """Instantiate this class with application specific data."""
 
-    def __init__(self, mackup, files, dry_run, verbose):
+    def __init__(self, mackup, files, dry_run, verbose, app_name=None):
         """
         Create an ApplicationProfile instance.
 
@@ -29,6 +29,8 @@ class ApplicationProfile(object):
         self.files = list(files)
         self.dry_run = dry_run
         self.verbose = verbose
+        self.app_name = app_name
+        self.subgroup = mackup.get_subgroup(self.app_name)
 
     def getFilepaths(self, filename):
         """
@@ -41,7 +43,8 @@ class ApplicationProfile(object):
             home_filepath, mackup_filepath (str, str)
         """
         return (os.path.join(os.environ['HOME'], filename),
-                os.path.join(self.mackup.mackup_folder, filename))
+                os.path.join(self.mackup.mackup_folder, filename) if self.subgroup is None \
+                else os.path.join(self.mackup.mackup_folder, self.subgroup, filename))
 
     def backup(self):
         """

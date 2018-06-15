@@ -85,7 +85,8 @@ def main():
             app = ApplicationProfile(mckp,
                                      app_db.get_files(app_name),
                                      dry_run,
-                                     verbose)
+                                     verbose,
+                                     app_name)
             printAppHeader(app_name)
             app.backup()
 
@@ -116,7 +117,8 @@ def main():
             app = ApplicationProfile(mckp,
                                      app_db.get_files(app_name),
                                      dry_run,
-                                     verbose)
+                                     verbose,
+                                     app_name)
             printAppHeader(app_name)
             app.restore()
 
@@ -140,7 +142,8 @@ def main():
                 app = ApplicationProfile(mckp,
                                          app_db.get_files(app_name),
                                          dry_run,
-                                         verbose)
+                                         verbose,
+                                         app_name)
                 printAppHeader(app_name)
                 app.uninstall()
 
