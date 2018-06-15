@@ -2,6 +2,7 @@
 
 import os
 import os.path
+import platform
 import sys
 
 from .constants import (MACKUP_BACKUP_PATH,
@@ -59,6 +60,13 @@ class Config(object):
 
         # Get the list of apps to allow
         self._apps_to_sync = self._parse_apps_to_sync()
+
+        # Get the list of subgroup apps to allow
+        self._subgroup = platform.system().lower()
+        self._subgroup_apps_to_sync = self._parse_subgroup_apps_to_sync(self._subgroup)
+
+        # Merge subgroup apps
+        self._apps_to_sync = self._apps_to_sync | self._subgroup_apps_to_sync
 
     @property
     def engine(self):
@@ -128,6 +136,28 @@ class Config(object):
             set. Set of application names to allow, lowercase
         """
         return set(self._apps_to_sync)
+
+    @property
+    def subgroup(self):
+        """
+        Subgroup.
+
+        Default value is platform name which can be darwin or linux.
+
+        Returns:
+            str
+        """
+        return str(self._subgroup)
+
+    @property
+    def subgroup_apps_to_sync(self):
+        """
+        Get the list of subgroup applications allowed in the config file.
+
+        Returns:
+            set. Set of application names to allow, lowercase
+        """
+        return set(self._subgroup_apps_to_sync)
 
     def _setup_parser(self, filename=None):
         """
@@ -273,6 +303,23 @@ class Config(object):
             apps_to_sync = set(self._parser.options(section_title))
 
         return apps_to_sync
+
+    def _parse_subgroup_apps_to_sync(self, subgroup):
+        """
+        Parse the subgroup applications to backup in the config.
+
+        Returns:
+            set
+        """
+        # We allow nothing by default
+        subgroup_apps_to_sync = set()
+
+        # Is the "[applications_to_sync]" section in the cfg file ?
+        section_title = '{}_applications_to_sync'.format(subgroup)
+        if self._parser.has_section(section_title):
+            subgroup_apps_to_sync = set(self._parser.options(section_title))
+
+        return subgroup_apps_to_sync
 
 
 class ConfigError(Exception):
